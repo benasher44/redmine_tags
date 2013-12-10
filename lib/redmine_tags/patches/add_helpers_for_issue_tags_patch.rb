@@ -1,5 +1,5 @@
 # This file is a part of redmine_tags
-# redMine plugin, that adds tagging support.
+# Redmine plugin, that adds tagging support.
 #
 # Copyright (c) 2010 Aleksey V Zapparov AKA ixti
 #
@@ -16,27 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with redmine_tags.  If not, see <http://www.gnu.org/licenses/>.
 
-module IssuesHelper
-  include TagsHelper
-
-  def sidebar_tags
-    unless @sidebar_tags
-      @sidebar_tags = []
-      if :none != RedmineTags.settings[:issues_sidebar].to_sym
-        @sidebar_tags = Issue.available_tags({
-          :project => @project,
-          :open_only => (RedmineTags.settings[:issues_open_only].to_i == 1)
-        })
+# This module patches a controller so that the methods from TagsHelper and
+# IssuesTagsHelper are available in its views.
+module RedmineTags
+  module Patches
+    module AddHelpersForIssueTagsPatch
+      def self.apply(controller)
+        controller.send(:helper, 'tags')
+        controller.send(:helper, 'issues_tags')
       end
     end
-    @sidebar_tags
-  end
-
-  def render_sidebar_tags
-    render_tags_list(sidebar_tags, {
-      :show_count => (RedmineTags.settings[:issues_show_count].to_i == 1),
-      :open_only => (RedmineTags.settings[:issues_open_only].to_i == 1),
-      :style => RedmineTags.settings[:issues_sidebar].to_sym
-    })
   end
 end

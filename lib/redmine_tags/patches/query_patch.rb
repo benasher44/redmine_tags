@@ -1,5 +1,5 @@
 # This file is a part of redmine_tags
-# redMine plugin, that adds tagging support.
+# Redmine plugin, that adds tagging support.
 #
 # Copyright (c) 2010 Aleksey V Zapparov AKA ixti
 #
@@ -17,6 +17,9 @@
 # along with redmine_tags.  If not, see <http://www.gnu.org/licenses/>.
 
 require_dependency 'query'
+if ActiveSupport::Dependencies::search_for_file('issue_query')
+  require_dependency 'issue_query'
+end
 
 module RedmineTags
   module Patches
@@ -70,6 +73,7 @@ module RedmineTags
         def available_filters_extended
           unless @available_filters 
             available_filters_original.merge!({ 'tags' => {
+              :name   => l(:tags),
               :type   => :list_optional,
               :order  => 6,
               :values => Issue.available_tags(:project => project).collect{ |t| [t.name, t.name] }

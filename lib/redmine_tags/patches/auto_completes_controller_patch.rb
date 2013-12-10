@@ -1,5 +1,5 @@
 # This file is a part of redmine_tags
-# redMine plugin, that adds tagging support.
+# Redmine plugin, that adds tagging support.
 #
 # Copyright (c) 2010 Aleksey V Zapparov AKA ixti
 #
@@ -34,6 +34,15 @@ module RedmineTags
         def issue_tags
           @name = params[:q].to_s
           @tags = Issue.available_tags({
+            :project_id => @project,
+            :name_like => @name
+          })
+          render :layout => false, :partial => 'tag_list'
+        end
+
+        def wiki_tags
+          @name = params[:q].to_s
+          @tags = WikiPage.available_tags({
             :project_id => @project,
             :name_like => @name
           })
